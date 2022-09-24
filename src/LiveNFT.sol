@@ -6,11 +6,10 @@ import "openzeppelin-contracts/utils/Strings.sol";
 import "openzeppelin-contracts/access/Ownable.sol";
 
 error MintPriceNotPaid();
-error MaxSupply();
 error NonExistentTokenURI();
 error WithdrawTransfer();
 
-contract NFT is ERC721, Ownable {
+contract LiveNFT is ERC721, Ownable {
     using Strings for uint256;
     string public baseTokenURI;
     uint256 public currentTokenId;
@@ -26,9 +25,6 @@ contract NFT is ERC721, Ownable {
             revert MintPriceNotPaid();
         }
         uint256 newTokenId = ++currentTokenId;
-        if (newTokenId > TOTAL_SUPPLY) {
-            revert MaxSupply();
-        }
         _safeMint(recipient, newTokenId);
         return newTokenId;
     }
