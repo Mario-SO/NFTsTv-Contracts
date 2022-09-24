@@ -7,4 +7,6 @@ Contracts for the NFTsTv project.
 
 `cd NFTsTv`
 
+`git checkout -b yourbranchname`
+
 `forge install`
