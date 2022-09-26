@@ -11,7 +11,7 @@ contract LiveNFTTest is Test {
 
     function setUp() public {
         // Deploy LiveNFT contract
-        livenft = new LiveNFT("https://example.com");
+        livenft = new LiveNFT();
     }
 
     function testFailNoMintPricePaid() public {

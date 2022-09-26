@@ -13,11 +13,12 @@ contract LiveNftFactoryTest is Test {
 
     function setUp() public {
         // Deploy LiveNFT contract
-        livenft = new LiveNFT("https://example.com");
+        livenft = new LiveNFT();
         factory = new LiveNftFactory(address(livenft));
     }
 
     function testCreateLiveNFT() public {
         factory.createLiveNFT();
+        assertEq(address(factory.livenfts(0).owner()), address(this));
     }
 }
