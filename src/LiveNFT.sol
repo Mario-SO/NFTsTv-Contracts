@@ -16,19 +16,24 @@ contract LiveNFT is ERC721, Ownable {
 
     uint256 public totalSupply;
     uint256 public mintPrice;
+    string public description;
+    string public LNFTname;
 
     constructor() ERC721("LiveNFT", "LNFT") {}
 
     function init(
         string memory _baseTokenURI,
+        string memory _name,
+        string memory _description,
         uint256 _totalSupply,
         uint256 _mintPrice
     ) external {
         baseTokenURI = _baseTokenURI;
+        LNFTname = _name;
+        description = _description;
         totalSupply = _totalSupply;
         mintPrice = _mintPrice;
-
-        transferOwnership(tx.origin);
+        // transferOwnership(tx.origin);
     }
 
     function mintTo(address recipient) public payable returns (uint256) {
