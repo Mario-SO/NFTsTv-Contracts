@@ -14,7 +14,7 @@ contract LiveNftFactory is CloneFactory {
 
     function createLiveNFT() public {
         LiveNFT liveNFT = LiveNFT(createClone(masterContract));
-        liveNFT.init("https://example.com");
+        liveNFT.init("https://example.com", "MyLNFT", "Welcome to my LNFT", 10, 1);
         livenfts.push(liveNFT);
     }
 }

@@ -11,13 +11,13 @@ error WithdrawTransfer();
 
 contract LiveNFT is ERC721, Ownable {
     using Strings for uint256;
-    string public baseTokenURI;
     uint256 public currentTokenId;
 
+    string public baseTokenURI;
+    string public LNFTname;
+    string public description;
     uint256 public totalSupply;
     uint256 public mintPrice;
-    string public description;
-    string public LNFTname;
 
     constructor() ERC721("LiveNFT", "LNFT") {}
 

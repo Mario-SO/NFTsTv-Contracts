@@ -12,6 +12,7 @@ contract LiveNFTTest is Test {
     function setUp() public {
         // Deploy LiveNFT contract
         livenft = new LiveNFT();
+        livenft.init("https://exmaple.com", "MyLNFT", "Welcome to my LNFT", 10, 1 ether);
     }
 
     function testFailNoMintPricePaid() public {
@@ -19,15 +20,15 @@ contract LiveNFTTest is Test {
     }
 
     function testMintPricePaid() public {
-        livenft.mintTo{value: 0.08 ether}(address(1));
+        livenft.mintTo{value: 1 ether}(address(1));
     }
 
     function testFailMintToZeroAddress() public {
-        livenft.mintTo{value: 0.08 ether}(address(0));
+        livenft.mintTo{value: 1 ether}(address(0));
     }
 
     function testNewMintOwnerRegistered() public {
-        livenft.mintTo{value: 0.08 ether}(address(1));
+        livenft.mintTo{value: 1 ether}(address(1));
         uint256 slotOfNewOwner = stdstore
             .target(address(livenft))
             .sig(livenft.ownerOf.selector)
@@ -43,7 +44,7 @@ contract LiveNFTTest is Test {
     }
 
     function testBalanceIncremented() public {
-        livenft.mintTo{value: 0.08 ether}(address(1));
+        livenft.mintTo{value: 1 ether}(address(1));
         uint256 slotBalance = stdstore
             .target(address(livenft))
             .sig(livenft.balanceOf.selector)
@@ -53,18 +54,18 @@ contract LiveNFTTest is Test {
         uint256 balanceFirstMint = uint256(
             vm.load(address(livenft), bytes32(slotBalance))
         );
-        assertEq(balanceFirstMint, 1);
+        assertEq(balanceFirstMint, 1 ether);
 
-        livenft.mintTo{value: 0.08 ether}(address(1));
+        livenft.mintTo{value: 1 ether}(address(1));
         uint256 balanceSecondMint = uint256(
             vm.load(address(livenft), bytes32(slotBalance))
         );
-        assertEq(balanceSecondMint, 2);
+        assertEq(balanceSecondMint, 2 ether);
     }
 
     function testSafeContractReceiver() public {
         Receiver receiver = new Receiver();
-        livenft.mintTo{value: 0.08 ether}(address(receiver));
+        livenft.mintTo{value: 1 ether}(address(receiver));
         uint256 slotBalance = stdstore
             .target(address(livenft))
             .sig(livenft.balanceOf.selector)
@@ -74,12 +75,12 @@ contract LiveNFTTest is Test {
         uint256 balance = uint256(
             vm.load(address(livenft), bytes32(slotBalance))
         );
-        assertEq(balance, 1);
+        assertEq(balance, 1 ether);
     }
 
     function testFailUnSafeContractReceiver() public {
         vm.etch(address(1), bytes("mock code"));
-        livenft.mintTo{value: 0.08 ether}(address(1));
+        livenft.mintTo{value: 1 ether}(address(1));
     }
 
     function testWithdrawalWorksAsOwner() public {
@@ -87,9 +88,9 @@ contract LiveNFTTest is Test {
         Receiver receiver = new Receiver();
         address payable payee = payable(address(0x1337));
         uint256 priorPayeeBalance = payee.balance;
-        livenft.mintTo{value: livenft.MINT_PRICE()}(address(receiver));
+        livenft.mintTo{value: 1 ether}(address(receiver));
         // Check that the balance of the contract is correct
-        assertEq(address(livenft).balance, livenft.MINT_PRICE());
+        assertEq(address(livenft).balance, 1 ether);
         uint256 nftBalance = address(livenft).balance;
         // Withdraw the balance and assert it was transferred
         livenft.withdrawPayments(payee);
@@ -99,9 +100,9 @@ contract LiveNFTTest is Test {
     function testWithdrawalFailsAsNotOwner() public {
         // Mint an LiveNFT, sending eth to the contract
         Receiver receiver = new Receiver();
-        livenft.mintTo{value: livenft.MINT_PRICE()}(address(receiver));
+        livenft.mintTo{value: 1 ether}(address(receiver));
         // Check that the balance of the contract is correct
-        assertEq(address(livenft).balance, livenft.MINT_PRICE());
+        assertEq(address(livenft).balance, 1 ether);
         // Confirm that a non-owner cannot withdraw
         vm.expectRevert("Ownable: caller is not the owner");
         vm.startPrank(address(0xd3ad));
