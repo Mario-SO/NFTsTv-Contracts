@@ -5,9 +5,10 @@ import "./LiveNFT.sol";
 import "./CloneFactory.sol";
 
 contract LiveNftFactory is CloneFactory {
-    LiveNFT[] public livenfts;
-    mapping (address => address[]) contentCreatorsChannels;
     address masterContract;
+
+    LiveNFT[] public livenfts;
+    mapping(address => address[]) contentCreatorsChannels;
 
     constructor(address _masterContract) {
         masterContract = _masterContract;
@@ -15,7 +16,13 @@ contract LiveNftFactory is CloneFactory {
 
     function createLiveNFT() public {
         LiveNFT liveNFT = LiveNFT(createClone(masterContract));
-        liveNFT.init("https://example.com", "MyLNFT", "Welcome to my LNFT", 10, 1);
+        liveNFT.init(
+            "https://example.com",
+            "MyLNFT",
+            "Welcome to my LNFT",
+            10,
+            1
+        );
         livenfts.push(liveNFT);
         contentCreatorsChannels[msg.sender].push(address(liveNFT));
     }
