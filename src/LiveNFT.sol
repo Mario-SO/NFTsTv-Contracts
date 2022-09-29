@@ -19,6 +19,8 @@ contract LiveNFT is ERC721, Ownable {
     uint256 public totalSupply;
     uint256 public mintPrice;
 
+    address[] emitterAddresses;
+
     constructor() ERC721("LiveNFT", "LNFT") {}
 
     function init(
@@ -36,13 +38,8 @@ contract LiveNFT is ERC721, Ownable {
         transferOwnership(tx.origin);
     }
 
-    function mintTo(address recipient) public payable returns (uint256) {
-        if (msg.value != mintPrice) {
-            revert MintPriceNotPaid();
-        }
-        uint256 newTokenId = ++currentTokenId;
-        _safeMint(recipient, newTokenId);
-        return newTokenId;
+    function addEmiterAddress(address _newEmitter) public onlyOwner {
+        emitterAddresses.push(_newEmitter);
     }
 
     function setTokenURI(string memory _baseTokenURI) public onlyOwner {
@@ -63,6 +60,15 @@ contract LiveNFT is ERC721, Ownable {
             bytes(baseTokenURI).length > 0
                 ? string(abi.encodePacked(baseTokenURI, tokenId.toString()))
                 : "";
+    }
+
+    function mintTo(address recipient) public payable returns (uint256) {
+        if (msg.value != mintPrice) {
+            revert MintPriceNotPaid();
+        }
+        uint256 newTokenId = ++currentTokenId;
+        _safeMint(recipient, newTokenId);
+        return newTokenId;
     }
 
     function withdrawPayments(address payable payee) external onlyOwner {
