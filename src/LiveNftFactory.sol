@@ -27,6 +27,7 @@ contract LiveNftFactory is CloneFactory {
         contentCreatorsChannels[msg.sender].push(address(liveNFT));
     }
 
-    // TODO: get array of addresses for specific _contentCreator address
-    // function getCreatorChannels(address _creatorAddress) public{}
+    function getCreatorChannels(address _creatorAddress) public view returns (address[] memory){
+        return contentCreatorsChannels[_creatorAddress];
+    }
 }
