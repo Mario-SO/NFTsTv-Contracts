@@ -35,7 +35,6 @@ contract LiveNFT is ERC721, Ownable {
         description = _description;
         totalSupply = _totalSupply;
         mintPrice = _mintPrice;
-        transferOwnership(tx.origin);
     }
 
     function addEmiterAddress(address _newEmitter) public onlyOwner {

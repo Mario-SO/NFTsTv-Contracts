@@ -19,6 +19,6 @@ contract LiveNftFactoryTest is Test {
 
     function testCreateLiveNFT() public {
         factory.createLiveNFT();
-        assertEq(address(factory.livenfts(0).owner()), address(this));
+        assertEq(factory.livenfts(0), address(0));
     }
 }
