@@ -14,6 +14,7 @@ contract LiveNftFactory is CloneFactory {
         masterContract = _masterContract;
     }
 
+    // TODO: get rid of hardcoded values
     function createLiveNFT() public {
         address liveNFT = createClone(masterContract);
         LiveNFT(liveNFT).init(
