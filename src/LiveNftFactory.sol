@@ -10,6 +10,12 @@ contract LiveNftFactory is CloneFactory {
     address[] public livenfts;
     mapping(address => address[]) contentCreatorsChannels;
 
+    string public uri;
+    string public name;
+    string public description;
+    uint256 public supply;
+    uint256 public price;
+
     constructor(address _masterContract) {
         masterContract = _masterContract;
     }
@@ -18,14 +24,20 @@ contract LiveNftFactory is CloneFactory {
     function createLiveNFT() public {
         address liveNFT = createClone(masterContract);
         LiveNFT(liveNFT).init(
-            "https://example.com",
-            "MyLNFT",
-            "Welcome to my LNFT",
-            10,
-            1
+            _uri,
+            _name,
+            _description,
+            _supply,
+            _price,
         );
         livenfts.push(address(liveNFT));
         contentCreatorsChannels[msg.sender].push(address(liveNFT));
+
+        uri = _uri;
+        name = _name;
+        description = _description;
+        supply = _supply;
+        price = _price;
     }
 
     function getCreatorChannels(address _creatorAddress) public view returns (address[] memory){
