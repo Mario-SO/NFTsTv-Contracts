@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: MIT
+
 pragma solidity ^0.8.10;
 
 import "./LiveNFT.sol";
@@ -20,7 +21,6 @@ contract LiveNftFactory is CloneFactory {
         masterContract = _masterContract;
     }
 
-    // TODO: get rid of hardcoded values
     function createLiveNFT() public {
         address liveNFT = createClone(masterContract);
         LiveNFT(liveNFT).init(
