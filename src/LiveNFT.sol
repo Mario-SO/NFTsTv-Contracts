@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.10;
 
-import "solmate/tokens/ERC721.sol";
-import "openzeppelin-contracts/utils/Strings.sol";
-import "openzeppelin-contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
 error MintPriceNotPaid();
 error NonExistentTokenURI();
@@ -13,13 +13,14 @@ contract LiveNFT is ERC721, Ownable {
     using Strings for uint256;
     uint256 public currentTokenId;
 
-    string public baseTokenURI;
     string public LNFTname;
+    string public baseTokenURI;
     string public description;
     uint256 public totalSupply;
     uint256 public mintPrice;
 
     address[] emitterAddresses;
+
     constructor() ERC721("LiveNFT", "LNFT") {}
 
     function init(
@@ -44,20 +45,17 @@ contract LiveNFT is ERC721, Ownable {
         baseTokenURI = _baseTokenURI;
     }
 
-    function tokenURI(uint256 tokenId)
+     function tokenURI(uint256 tokenId)
         public
         view
-        virtual
         override
         returns (string memory)
     {
-        if (ownerOf(tokenId) == address(0)) {
-            revert NonExistentTokenURI();
-        }
-        return
-            bytes(baseTokenURI).length > 0
-                ? string(abi.encodePacked(baseTokenURI, tokenId.toString()))
-                : "";
+        require(
+            _exists(tokenId),
+            "ERC721Metadata: URI query for nonexistent token"
+        );
+        return baseTokenURI;
     }
 
     function mintTo(address recipient) public payable returns (uint256) {
@@ -75,5 +73,17 @@ contract LiveNFT is ERC721, Ownable {
         if (!transferTx) {
             revert WithdrawTransfer();
         }
+    }
+
+    function name() public view override returns (string memory) {
+        return LNFTname;
+    }
+
+    function getMetadata()
+        public
+        view
+        returns (string memory, string memory, string memory, uint256, uint256)
+    {
+        return (baseTokenURI, LNFTname, description, totalSupply, mintPrice);
     }
 }

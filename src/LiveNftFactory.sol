@@ -1,46 +1,36 @@
-// SPDX-License-Identifier: MIT
-
 pragma solidity ^0.8.10;
 
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "./LiveNFT.sol";
-import "./CloneFactory.sol";
 
-contract LiveNftFactory is CloneFactory {
-    address masterContract;
-
+contract LNFTFactory {
+    address public masterContract;
     address[] public livenfts;
     mapping(address => address[]) contentCreatorsChannels;
 
-    string public uri;
-    string public name;
-    string public description;
-    uint256 public supply;
-    uint256 public price;
 
-    constructor(address _masterContract) {
-        masterContract = _masterContract;
+    function createLiveNFT(
+        string memory _uri,
+        string memory _name,
+        string memory _description,
+        uint256 _totalSupply,
+        uint256 _mintPrice
+    ) public returns (address){
+        LiveNFT contractInstance = new LiveNFT();
+        address contractAddress = address(contractInstance);
+        LiveNFT(contractAddress).init(_uri, _name, _description, _totalSupply, _mintPrice);
+        livenfts.push(contractAddress);
+        contentCreatorsChannels[msg.sender].push(contractAddress);
+        return contractAddress;
     }
 
-    function createLiveNFT() public {
-        address liveNFT = createClone(masterContract);
-        LiveNFT(liveNFT).init(
-            _uri,
-            _name,
-            _description,
-            _supply,
-            _price,
-        );
-        livenfts.push(address(liveNFT));
-        contentCreatorsChannels[msg.sender].push(address(liveNFT));
-
-        uri = _uri;
-        name = _name;
-        description = _description;
-        supply = _supply;
-        price = _price;
-    }
-
-    function getCreatorChannels(address _creatorAddress) public view returns (address[] memory){
+    function getCreatorChannels(
+        address _creatorAddress
+    ) public view returns (address[] memory) {
         return contentCreatorsChannels[_creatorAddress];
+    }
+
+    function getMetadata(address _liveNftAddress) public view returns (string memory, string memory, string memory, uint256, uint256) {
+        return LiveNFT(_liveNftAddress).getMetadata();
     }
 }
